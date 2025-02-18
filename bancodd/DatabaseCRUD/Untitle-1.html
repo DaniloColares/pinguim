@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Atletas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 400px; margin: auto; }
+        input, select, button { display: block; width: 100%; margin: 10px 0; padding: 10px; }
+        .hidden { display: none; }
+        .discreto { background: none; border: none; color: blue; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cadastro de Atleta</h2>
+        <input type="text" id="cpf" placeholder="CPF">
+        <input type="text" id="nome" placeholder="Nome Completo">
+        <input type="date" id="dataNascimento">
+        <input type="text" id="faixa" placeholder="Faixa Atual">
+        <button onclick="cadastrarAtleta()">Cadastrar</button>
+        
+        <h2>Procurar Atleta</h2>
+        <input type="text" id="cpfBusca" placeholder="CPF">
+        <button onclick="buscarAtleta()">Buscar</button>
+        <div id="resultado"></div>
+        <button class="discreto" onclick="mostrarAtualizacao()">Atualizar Informações</button>
+        
+        <div id="atualizacao" class="hidden">
+            <input type="password" id="senhaAdmin" placeholder="Senha do Administrador">
+            <button onclick="verificarSenha()">Confirmar</button>
+            <div id="formAtualizacao" class="hidden">
+                <input type="text" id="novaFaixa" placeholder="Nova Faixa">
+                <select id="novaMensalidade">
+                    <option value="Paga">Paga</option>
+                    <option value="Pendente">Pendente</option>
+                </select>
+                <input type="date" id="dataPagamento" placeholder="Data do Pagamento">
+                <button onclick="atualizarAtleta()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cadastrarAtleta() {
+            const cpf = document.getElementById('cpf').value;
+            const nome = document.getElementById('nome').value;
+            const dataNascimento = document.getElementById('dataNascimento').value;
+            const faixa = document.getElementById('faixa').value;
+            const statusMensalidade = "Pendente";
+            const dataPagamento = "";
+
+            if (!cpf || !nome || !dataNascimento || !faixa) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+
+            const atleta = { cpf, nome, dataNascimento, faixa, statusMensalidade, dataPagamento };
+            localStorage.setItem(`atleta_${cpf}`, JSON.stringify(atleta));
+            alert("Atleta cadastrado com sucesso!");
+            
+            document.getElementById('cpf').value = "";
+            document.getElementById('nome').value = "";
+            document.getElementById('dataNascimento').value = "";
+            document.getElementById('faixa').value = "";
+        }
+
+        function buscarAtleta() {
+            const cpfBusca = document.getElementById('cpfBusca').value;
+            const atleta = localStorage.getItem(`atleta_${cpfBusca}`);
+            if (atleta) {
+                const dados = JSON.parse(atleta);
+                document.getElementById('resultado').innerHTML = 
+                    `<p>Nome: ${dados.nome}</p>
+                     <p>Data de Nascimento: ${dados.dataNascimento}</p>
+                     <p>Faixa: ${dados.faixa}</p>
+                     <p>Mensalidade: ${dados.statusMensalidade}</p>`;
+            } else {
+                document.getElementById('resultado').innerHTML = "<p>Atleta não encontrado.</p>";
+            }
+        }
+
+        function mostrarAtualizacao() {
+            document.getElementById('atualizacao').classList.toggle('hidden');
+        }
+
+        function verificarSenha() {
+            const senha = document.getElementById('senhaAdmin').value;
+            if (senha === "admin123") { 
+                document.getElementById('formAtualizacao').classList.remove('hidden');
+                document.getElementById('senhaAdmin').value = "";
+            } else {
+                alert("Senha incorreta!");
+                document.getElementById('formAtualizacao').classList.add('hidden');
+            }
+          }
+        function atualizarAtleta(){
+            const cpfBusca = document.getElementById('cpfBusca').value;
+            const atleta = localStorage.getItem(`atleta_${cpfBusca}`);
+            if (atleta) {
+                const dados = JSON.parse(atleta);
+                
+                // Atualizando os dados
+                dados.faixa = document.getElementById('novaFaixa').value || dados.faixa;
+                dados.statusMensalidade = document.getElementById('novaMensalidade').value || dados.statusMensalidade;
+                dados.dataPagamento = document.getElementById('dataPagamento').value || dados.dataPagamento;
+                
+                // Salvando os dados atualizados no localStorage
+                localStorage.setItem(`atleta_${cpfBusca}`, JSON.stringify(dados));
+                alert("Dados atualizados com sucesso!");
+          }
+        }
+    </script>
+</body>
+</html>
