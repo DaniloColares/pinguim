@@ -115,7 +115,7 @@
                         <p style="font-size: 30px">Faixa: ${dados.faixa}</p>
                         <p style="font-size: 30px">Mensalidade: ${dados.statusMensalidade}</p>
                         <button style="display: flex; justify-content: center; align-items: center; color: blue; width: 100%; height: fit-content; font-size: 30px; background-color: transparent;" onclick="mostrarAtualizacao('${cpfBusca}')">Atualizar Informações</button>
-                        <button style="display: flex; justify-content: center; align-items: center; color: blue; width: 100%; height: fit-content; font-size: 30px; background-color: transparent;" onclick="mostrarAtualizacao('${cpfBusca}')">Excluir Atleta</button>
+                        <button style="display: flex; justify-content: center; align-items: center; color: blue; width: 100%; height: fit-content; font-size: 30px; background-color: transparent;" onclick="excluirAtleta('${cpfBusca}')">Excluir Atleta</button>
                     `;
             } else {
                 document.getElementById('resultado').innerHTML = `<p style="font-size: 30px">Atleta não encontrado.</p>`;
@@ -167,6 +167,13 @@
                 alert("Dados atualizados com sucesso!");
                 home();
             }
+        }
+            function excluirAtleta(cpf) {
+            if (confirm("Tem certeza que deseja excluir este atleta?")) 
+                localStorage.removeItem(`atleta_${cpf}`);
+                alert("Atleta excluído com sucesso!");
+                home();
+            
         }
     </script>
 </body>
