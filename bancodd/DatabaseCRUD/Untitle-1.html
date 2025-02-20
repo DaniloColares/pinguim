@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Atletas Jiu-Jitsu</title>
-    
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .container { max-width: 400px; margin: auto; }
@@ -101,6 +99,8 @@
             document.getElementById('nome').value = "";
             document.getElementById('dataNascimento').value = "";
             document.getElementById('faixa').value = "";
+
+            home();
         }
 
         function buscarAtleta() {
@@ -114,26 +114,25 @@
                         <p style="font-size: 30px">Data de Nascimento: ${dados.dataNascimento}</p>
                         <p style="font-size: 30px">Faixa: ${dados.faixa}</p>
                         <p style="font-size: 30px">Mensalidade: ${dados.statusMensalidade}</p>
-                        <button style="display: flex; justify-content: center; align-items: center; color: blue; width: 100%; height: fit-content; font-size: 30px; background-color: transparent;" onclick="mostrarAtualizacao()">Atualizar Informações</button>
-                        
-                     `;
+                        <button style="display: flex; justify-content: center; align-items: center; color: blue; width: 100%; height: fit-content; font-size: 30px; background-color: transparent;" onclick="mostrarAtualizacao('${cpfBusca}')">Atualizar Informações</button>
+                    `;
             } else {
                 document.getElementById('resultado').innerHTML = `<p style="font-size: 30px">Atleta não encontrado.</p>`;
             }
         }
 
-        function mostrarAtualizacao() {
+        function mostrarAtualizacao(cpf) {
             document.body.innerHTML =
             `
                 <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center">
                     <input type="password" id="senhaAdmin" placeholder="Senha do Administrador">
-                    <button style="width: 300px; height: fit-content; font-size: 30px; color: white" onclick="verificarSenha()">Confirmar</button>
+                    <button style="width: 300px; height: fit-content; font-size: 30px; color: white" onclick="verificarSenha('${cpf}')">Confirmar</button>
                     <button style="color: blue; width: 300px; height: fit-content; font-size: 30px; background-color: transparent" onclick="home()">Voltar</button>
                 </div>
             `;
         }
 
-        function verificarSenha() {
+        function verificarSenha(cpf) {
             const senha = document.getElementById('senhaAdmin').value;
             if (senha === "admin123") { 
                 document.body.innerHTML =
@@ -145,30 +144,28 @@
                             <option value="Pendente">Pendente</option>
                         </select>
                         <input type="date" id="dataPagamento" placeholder="Data do Pagamento">
-                        <button style="width: 300px; height: fit-content; font-size: 30px; color: white" onclick="atualizarAtleta()">Salvar Alterações</button>
+                        <button style="width: 300px; height: fit-content; font-size: 30px; color: white" onclick="atualizarAtleta('${cpf}')">Salvar Alterações</button>
                         <button style="color: blue; width: 300px; height: fit-content; font-size: 30px; background-color: transparent" onclick="home()">Voltar</button>
                     </div>
                 `
             } else {
                 alert("Senha incorreta!");
-                document.getElementById('formAtualizacao').classList.add('hidden');
             }
-          }
-        function atualizarAtleta(){
-            const cpfBusca = document.getElementById('cpfBusca').value;
-            const atleta = localStorage.getItem(`atleta_${cpfBusca}`);
+        }
+
+        function atualizarAtleta(cpf) {
+            const atleta = localStorage.getItem(`atleta_${cpf}`);
             if (atleta) {
                 const dados = JSON.parse(atleta);
                 
-                // Atualizando os dados
                 dados.faixa = document.getElementById('novaFaixa').value || dados.faixa;
                 dados.statusMensalidade = document.getElementById('novaMensalidade').value || dados.statusMensalidade;
                 dados.dataPagamento = document.getElementById('dataPagamento').value || dados.dataPagamento;
                 
-                // Salvando os dados atualizados no localStorage
-                localStorage.setItem(`atleta_${cpfBusca}`, JSON.stringify(dados));
+                localStorage.setItem(`atleta_${cpf}`, JSON.stringify(dados));
                 alert("Dados atualizados com sucesso!");
-          }
+                home();
+            }
         }
     </script>
 </body>
